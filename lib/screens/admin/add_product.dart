@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,9 +23,17 @@ class _AddProductState extends State<AddProduct> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   late int _isSelected = 0;
-  String? _selectedCategory;
   String? _selectedBrand;
   String id = const Uuid().v1();
+
+  List categories = [];
+  String? _selectedCategory;
+
+  @override
+  void initState() {
+    getCategory();
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -34,16 +44,8 @@ class _AddProductState extends State<AddProduct> {
     super.dispose();
   }
 
-  final List<String> _categoryList = [
-    "Food",
-    "Bazar",
-    "Stationary",
-  ];
-  final List<String> _brandList = [
-    "Matedor",
-    "Rfl",
-    "Pran",
-  ];
+  // final List<String> _brandList = ["Matedor", "Rfl", "Pran"];
+  final List<String> _brandList = [];
 
   final ImagePicker _picker = ImagePicker();
   final List<XFile> _selectedFiles = [];
@@ -52,6 +54,8 @@ class _AddProductState extends State<AddProduct> {
 
   @override
   Widget build(BuildContext context) {
+    // getBrands('Cloth');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),
@@ -72,43 +76,69 @@ class _AddProductState extends State<AddProduct> {
                       shrinkWrap: true,
                       padding: const EdgeInsets.all(16),
                       children: [
-                        //category, brand
-                        Row(
-                          children: [
-                            //category
-                            Flexible(
-                              child: DropdownButtonFormField(
-                                hint: const Text('Category'),
-                                items: _categoryList
-                                    .map((item) => DropdownMenuItem<String>(
-                                        value: item, child: Text(item)))
-                                    .toList(),
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    _selectedCategory = value!;
-                                  });
+                        //category
+                        DropdownButtonFormField(
+                          hint: const Text('Select Category'),
+                          items: categories
+                              .map((item) => DropdownMenuItem<String>(
+                                  value: item, child: Text(item)))
+                              .toList(),
+                          onChanged: (String? value) {
+                            setState(() {
+                              _selectedCategory = value!;
+                            });
+                          },
+                          validator: (value) =>
+                              value == null ? 'please select a category' : null,
+                        ),
+
+                        const SizedBox(height: 8),
+
+                        //category
+                        _selectedCategory != null
+                            ? StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('All Brand')
+                                    .doc('Brand')
+                                    .collection(_selectedCategory.toString())
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Text('Some thing went wrong');
+                                  }
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return Container(
+                                      height: 64,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          border: Border.all(
+                                              color: Colors.grey.shade500)),
+                                    );
+                                  }
+
+                                  return DropdownButtonFormField(
+                                    hint: const Text('Select Brand'),
+                                    items: snapshot.data!.docs
+                                        .map((item) => DropdownMenuItem<String>(
+                                            value: item.get('name'),
+                                            child: Text(item.get('name'))))
+                                        .toList(),
+                                    onChanged: (String? value) {
+                                      _selectedBrand = value!;
+                                    },
+                                  );
                                 },
-                              ),
-                            ),
-
-                            const SizedBox(width: 8),
-
-                            //category
-                            Flexible(
-                              child: DropdownButtonFormField(
-                                hint: const Text('Brand'),
+                              )
+                            : DropdownButtonFormField(
+                                hint: const Text('No category selected'),
                                 items: _brandList
                                     .map((item) => DropdownMenuItem<String>(
                                         value: item, child: Text(item)))
                                     .toList(),
-                                onChanged: (String? value) {
-                                  _selectedBrand = value!;
-                                },
+                                onChanged: (String? value) {},
                               ),
-                            ),
-                          ],
-                        ),
-                        // brand
 
                         const SizedBox(height: 8),
 
@@ -184,14 +214,15 @@ class _AddProductState extends State<AddProduct> {
 
                         // images
                         OutlinedButton.icon(
-                            onPressed: () {
-                              addImages();
-                            },
-                            icon: const Icon(Icons.add_circle_outline_rounded),
-                            label: const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: Text('Add Image'),
-                            )),
+                          onPressed: () {
+                            addImages();
+                          },
+                          icon: const Icon(Icons.add_circle_outline_rounded),
+                          label: const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: Text('Add Image'),
+                          ),
+                        ),
 
                         const SizedBox(height: 8),
 
@@ -253,9 +284,7 @@ class _AddProductState extends State<AddProduct> {
                     padding: const EdgeInsets.all(16),
                     child: ElevatedButton(
                         onPressed: () {
-                          if (_globalKey.currentState!.validate() &&
-                              _selectedCategory!.isNotEmpty &&
-                              _selectedBrand!.isNotEmpty) {
+                          if (_globalKey.currentState!.validate()) {
                             if (_selectedFiles.isNotEmpty) {
                               //
                               uploadToFirebase();
@@ -263,10 +292,6 @@ class _AddProductState extends State<AddProduct> {
                               Fluttertoast.showToast(
                                   msg: 'Please Select Image');
                             }
-                            // upload file
-                          } else {
-                            Fluttertoast.showToast(
-                                msg: 'Please Select category/brand');
                           }
                         },
                         child: const Padding(
@@ -366,6 +391,21 @@ class _AddProductState extends State<AddProduct> {
       Fluttertoast.cancel();
       Fluttertoast.showToast(msg: 'Upload Product successfully');
       setState(() => _isUploadLoading = false);
+    });
+  }
+
+  //
+  getCategory() {
+    Product.refCategory
+        .orderBy('name')
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      for (var doc in querySnapshot.docs) {
+        var category = doc.get('name');
+        setState(() {
+          categories.add(category);
+        });
+      }
     });
   }
 }

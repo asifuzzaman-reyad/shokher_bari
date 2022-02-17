@@ -174,15 +174,13 @@ class Product {
   }
 
   // addCategory
-  static addCategory(String name) {
+  static addCategory(String id, String categoryName, String imageUrl) {
     String id = const Uuid().v1();
 
     //
-    refCategory.doc(id).set({
-      'name': name,
-      'image':
-          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8cHJvZHVjdHxlbnwwfHwwfHw%3D&w=1000&q=80',
-    }).then((value) {
+    refCategory
+        .doc(id)
+        .set({'name': categoryName, 'image': imageUrl}).then((value) {
       Fluttertoast.showToast(msg: 'Upload category successfully');
     });
   }

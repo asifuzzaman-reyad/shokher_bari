@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shokher_bari/screens/admin/add_brand.dart';
 import 'package:shokher_bari/screens/admin/add_category.dart';
 import 'package:shokher_bari/screens/admin/manage_orders.dart';
 
@@ -20,17 +21,16 @@ class _AdminState extends State<Admin> {
       appBar: AppBar(
         title: const Text('Admin'),
       ),
+
+      //
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
           // add category
           ListTile(
             onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const AddNew(title: 'Add Category')));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AddCategory()));
             },
             leading: const Icon(Icons.add),
             title: const Text('Add Category'),
@@ -40,7 +40,10 @@ class _AdminState extends State<Admin> {
 
           // add brand
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const AddBrand()));
+            },
             leading: const Icon(Icons.add),
             title: const Text('Add Brand'),
           ),
