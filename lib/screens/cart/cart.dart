@@ -143,7 +143,8 @@ class Cart extends StatelessWidget {
                       Container(
                         color: Colors.white,
                         width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
                         child: SizedBox(
                           height: 48,
                           child: ElevatedButton(
@@ -177,9 +178,7 @@ class Cart extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                         builder: (_) => CheckoutAddress(
-                                              uid: uid,
-                                              total: total,
-                                            )));
+                                            uid: uid, total: total)));
                               });
                             },
                             child: const Text('Checkout'),

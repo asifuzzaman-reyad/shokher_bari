@@ -3,12 +3,24 @@ import 'package:im_stepper/stepper.dart';
 import 'package:shokher_bari/dashboard.dart';
 
 class CheckoutOrder extends StatelessWidget {
-  const CheckoutOrder({Key? key}) : super(key: key);
+  const CheckoutOrder({Key? key, required this.uid}) : super(key: key);
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Checkout (3/3)')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const Dashboard()),
+                  (_) => false);
+            },
+            icon: const Icon(Icons.home)),
+        title: const Text('Checkout (3/3)'),
+      ),
 
       //
       body: Column(
@@ -86,7 +98,8 @@ class CheckoutOrder extends StatelessWidget {
 
           // select address
           Expanded(
-            child: Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 32),
               child: Column(
                 children: [
                   Text(
@@ -99,28 +112,28 @@ class CheckoutOrder extends StatelessWidget {
                   //
                   Text(
                     'Congratulations. Your order successfully placed.',
-                    style: Theme.of(context).textTheme.subtitle2,
+                    style: Theme.of(context).textTheme.bodyText2,
                     textAlign: TextAlign.center,
                   ),
 
                   const SizedBox(height: 4),
+
                   //
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'You can track your order number ',
-                        style: Theme.of(context).textTheme.subtitle2,
-                        textAlign: TextAlign.center,
-                      ),
-                      SelectableText(
-                        '#456464646',
-                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                              color: Colors.orange,
-                            ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
+                  Text(
+                    'You can track your order number  ',
+                    style: Theme.of(context).textTheme.bodyText2,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: 4),
+
+                  //
+                  SelectableText(
+                    uid,
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          color: Colors.orange,
+                        ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),

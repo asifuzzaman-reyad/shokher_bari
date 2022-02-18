@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shokher_bari/models/product.dart';
@@ -150,6 +151,7 @@ class _AddProductState extends State<AddProduct> {
                             label: Text('Product Name'),
                           ),
                           keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.next,
                           textCapitalization: TextCapitalization.words,
                           validator: (value) =>
                               value!.isEmpty ? 'Enter product name' : null,
@@ -167,6 +169,7 @@ class _AddProductState extends State<AddProduct> {
                           minLines: 4,
                           maxLines: 12,
                           keyboardType: TextInputType.multiline,
+                          textInputAction: TextInputAction.next,
                           textCapitalization: TextCapitalization.words,
                           validator: (value) => value!.isEmpty
                               ? 'Enter product description'
@@ -187,6 +190,7 @@ class _AddProductState extends State<AddProduct> {
                                   label: Text('Price'),
                                 ),
                                 keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
                                 validator: (value) =>
                                     value!.isEmpty ? 'Enter price' : null,
                               ),
@@ -203,6 +207,7 @@ class _AddProductState extends State<AddProduct> {
                                   label: Text('Quantity'),
                                 ),
                                 keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
                                 validator: (value) =>
                                     value!.isEmpty ? 'Enter quantity' : null,
                               ),
@@ -391,6 +396,7 @@ class _AddProductState extends State<AddProduct> {
       Fluttertoast.cancel();
       Fluttertoast.showToast(msg: 'Upload Product successfully');
       setState(() => _isUploadLoading = false);
+      Navigator.pop(context);
     });
   }
 

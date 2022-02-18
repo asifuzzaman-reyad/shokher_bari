@@ -24,6 +24,9 @@ class AllProducts extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             var data = snapshot.data!.docs;
+            if (data.isEmpty) {
+              return const Center(child: Text('No product found'));
+            }
             return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,

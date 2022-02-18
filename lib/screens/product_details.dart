@@ -55,11 +55,11 @@ class _ProductDetailsState extends State<ProductDetails> {
               children: [
                 // product image
                 SizedBox(
-                  height: 250,
+                  height: 300,
                   child: Carousel(
                     autoplay: false,
                     dotIncreasedColor: Colors.red,
-                    dotBgColor: Colors.transparent,
+                    dotBgColor: Colors.grey.shade300,
                     indicatorBgPadding: 8,
                     images: widget.product.images
                         .map((image) => Image.network(
@@ -228,6 +228,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                       width: double.infinity,
                       color: Colors.white,
                       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+                      constraints: const BoxConstraints(
+                        minHeight: 100,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -295,6 +298,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                       return IconButton(
                         onPressed: () async {
+                          //add to cart
                           Product.addToCart(widget.product);
                         },
                         icon: const Icon(Icons.shopping_cart_outlined),

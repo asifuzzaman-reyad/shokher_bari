@@ -27,9 +27,16 @@ class _ProductCardState extends State<ProductCard> {
       child: Container(
         width: width * .42,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(8),
-        ),
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                offset: Offset(1, 2),
+                spreadRadius: 1,
+                blurRadius: 5,
+              )
+            ]),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

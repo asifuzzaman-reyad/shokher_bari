@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/models/product.dart';
 
+import '../../../constrains.dart';
+
 //
 class CartCard extends StatefulWidget {
   const CartCard({Key? key, required this.product}) : super(key: key);
@@ -58,17 +60,27 @@ class _CartCardState extends State<CartCard> {
 
                           // delete
                           GestureDetector(
-                              onTap: () async {
-                                await Product.refCart
-                                    .doc(widget.product.id)
-                                    .delete()
-                                    .then((value) {
-                                  Fluttertoast.cancel();
-                                  Fluttertoast.showToast(
-                                      msg: 'Delete successfully');
-                                });
-                              },
-                              child: const Icon(Icons.delete_outline, size: 18))
+                            onTap: () async {
+                              await Product.refCart
+                                  .doc(widget.product.id)
+                                  .delete()
+                                  .then((value) {
+                                Fluttertoast.cancel();
+                                Fluttertoast.showToast(msg: 'Remove from cart');
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade200,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.delete_outline,
+                                size: 18,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
 
@@ -96,18 +108,19 @@ class _CartCardState extends State<CartCard> {
                         children: [
                           // sale price
                           Text(
-                            '\$ ${widget.product.price}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(color: Colors.red),
+                            '$kTk ${widget.product.price}',
+                            style:
+                                Theme.of(context).textTheme.subtitle1!.copyWith(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                           ),
 
                           const SizedBox(width: 8),
 
                           // regular price
                           Text(
-                            '\$ ${widget.product.price + 20}',
+                            '$kTk ${widget.product.price + 20}',
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText1!

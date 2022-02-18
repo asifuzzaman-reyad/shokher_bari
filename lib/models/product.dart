@@ -95,10 +95,7 @@ class Product {
 
   // deleteFromCart
   static deleteFromCart(String id) async {
-    await Product.refCart.doc(id).delete().then((value) {
-      Fluttertoast.cancel();
-      Fluttertoast.showToast(msg: 'Remove from cart');
-    });
+    await Product.refCart.doc(id).delete().then((value) {});
   }
 
   // addToFavorite

@@ -34,7 +34,7 @@ class Categories extends StatelessWidget {
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: Text("Loading"));
+                        return const Center(child: CircularProgressIndicator());
                       }
                       var data = snapshot.data!.docs;
 

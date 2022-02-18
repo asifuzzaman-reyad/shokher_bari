@@ -9,11 +9,13 @@ import '../checkout_order.dart';
 class Bkash extends StatefulWidget {
   const Bkash({
     Key? key,
-    required this.address,
+    required this.method,
     required this.uid,
     required this.total,
+    required this.address,
   }) : super(key: key);
 
+  final String method;
   final String uid;
   final int total;
   final AddressBook address;
@@ -123,7 +125,8 @@ class _BkashState extends State<Bkash> {
                           contentPadding: EdgeInsets.all(8),
                           counterText: '',
                         ),
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
                         maxLength: 11,
                         validator: (value) => value!.isEmpty
                             ? 'Please enter phone no'
@@ -159,6 +162,7 @@ class _BkashState extends State<Bkash> {
                           counterText: '',
                         ),
                         keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.done,
                         maxLength: 10,
                         validator: (value) => value!.isEmpty
                             ? 'Please enter transaction ID'
@@ -198,10 +202,11 @@ class _BkashState extends State<Bkash> {
                             'phone': _phoneController.text.trim(),
                             'transaction': _transactionController.text.trim(),
                             'message': '',
+                            'method': widget.method,
                           }).then(
                             (value) {
                               Fluttertoast.showToast(
-                                  msg: 'Placed Order successfully');
+                                  msg: 'Placed order successfully');
 
                               // update order status
                               Product.refOrder.doc(widget.uid).update({
@@ -209,10 +214,12 @@ class _BkashState extends State<Bkash> {
                               });
 
                               //
-                              Navigator.pushReplacement(
+                              Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) => const CheckoutOrder()));
+                                      builder: (_) =>
+                                          CheckoutOrder(uid: widget.uid)),
+                                  (_) => false);
                             },
                           );
                         }

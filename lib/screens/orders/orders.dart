@@ -27,7 +27,9 @@ class Orders extends StatelessWidget {
           // cart product
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: Product.refOrder.snapshots(),
+              stream: Product.refOrder
+                  .orderBy('time', descending: true)
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
@@ -117,30 +119,38 @@ class Orders extends StatelessWidget {
                                     ),
 
                                     // payment
-                                    InkWell(
-                                      onTap: () {
-                                        //
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => CheckoutAddress(
-                                                      uid: data[index]
-                                                          .get('uid'),
-                                                      total: data[index]
-                                                          .get('total'),
-                                                    )));
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        child: Text(
-                                          '${data[index].get('payment')}',
-                                          style: const TextStyle(
-                                            color: Colors.orange,
-                                            fontWeight: FontWeight.w500,
+                                    data[index].get('payment') == 'Unpaid'
+                                        ? OutlinedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          CheckoutAddress(
+                                                            uid: data[index]
+                                                                .get('uid'),
+                                                            total: data[index]
+                                                                .get('total'),
+                                                          )));
+                                            },
+                                            child: const Text(
+                                              'Unpaid',
+                                              style: TextStyle(
+                                                color: Colors.orange,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          )
+                                        : const Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text(
+                                              'Placed',
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),
@@ -181,15 +191,15 @@ class Orders extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         color: data[index].get('status') ==
                                                 'Pending'
-                                            ? Colors.orange
+                                            ? Colors.red
                                             : data[index].get('status') ==
-                                                    'Delivered'
-                                                ? Colors.green
-                                                : Colors.red, // Cancelled
+                                                    'Processing'
+                                                ? Colors.blue
+                                                : Colors.green, // Cancelled
                                         borderRadius: BorderRadius.circular(16),
                                       ),
                                       padding: const EdgeInsets.symmetric(
-                                        vertical: 4,
+                                        vertical: 2,
                                         horizontal: 12,
                                       ),
                                       child: Text(

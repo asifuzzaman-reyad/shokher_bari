@@ -1,12 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:shokher_bari/models/address_book.dart';
-import 'package:shokher_bari/models/product.dart';
 import 'package:shokher_bari/screens/checkout/checkour_payment_details.dart';
-
-import 'checkout_order.dart';
 
 class CheckoutPayment extends StatelessWidget {
   const CheckoutPayment({
@@ -117,7 +112,11 @@ class CheckoutPayment extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (_) => CheckoutPaymentDetails(
-                                uid: uid, total: total, address: address)));
+                                  method: 'bkash',
+                                  uid: uid,
+                                  total: total,
+                                  address: address,
+                                )));
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -155,35 +154,44 @@ class CheckoutPayment extends StatelessWidget {
                 //cash on delivery
                 GestureDetector(
                   onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => CheckoutPaymentDetails(
+                                  method: 'cash',
+                                  uid: uid,
+                                  total: total,
+                                  address: address,
+                                )));
                     //
-                    FirebaseFirestore.instance
-                        .collection('Payments')
-                        .doc('Users')
-                        .collection('asifreyad1@gmail.com')
-                        .doc(uid)
-                        .set({
-                      'uid': uid,
-                      'total': total,
-                      'phone': '',
-                      'transaction': '',
-                      'message': '',
-                    }).then(
-                      (value) {
-                        Fluttertoast.showToast(
-                            msg: 'Placed Order successfully');
+                    // FirebaseFirestore.instance
+                    //     .collection('Payments')
+                    //     .doc('Users')
+                    //     .collection('asifreyad1@gmail.com')
+                    //     .doc(uid)
+                    //     .set({
+                    //   'uid': uid,
+                    //   'total': total,
+                    //   'phone': '',
+                    //   'transaction': '',
+                    //   'message': '',
+                    // }).then(
+                    //   (value) {
+                    //     Fluttertoast.showToast(
+                    //         msg: 'Placed Order successfully');
+                    //
+                    //     // update order status
+                    //     Product.refOrder.doc(uid).update({
+                    //       'payment': 'Placed',
+                    //     });
 
-                        // update order status
-                        Product.refOrder.doc(uid).update({
-                          'payment': 'Placed',
-                        });
-
-                        //
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const CheckoutOrder()));
-                      },
-                    );
+                    //
+                    // Navigator.pushReplacement(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (_) => CheckoutOrder(uid: uid)));
+                    // },
+                    // );
                   },
                   child: Container(
                     decoration: BoxDecoration(

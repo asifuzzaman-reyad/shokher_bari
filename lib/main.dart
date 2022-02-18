@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
             centerTitle: true,
           ),
           // scaffoldBackgroundColor: Colors.yellow,
-          // scaffoldBackgroundColor: const Color(0xFFF6FBFF),
+          scaffoldBackgroundColor: const Color(0xFFF6FBFF),
           buttonTheme: const ButtonThemeData(alignedDropdown: true),
           inputDecorationTheme:
               const InputDecorationTheme(border: OutlineInputBorder()),
