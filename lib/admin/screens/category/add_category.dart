@@ -4,17 +4,18 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/banner_provider.dart';
 import 'package:uuid/uuid.dart';
 
-class AddBanner extends StatefulWidget {
-  const AddBanner({Key? key}) : super(key: key);
+import '/provider_admin/category_provider.dart';
+
+class AddCategory extends StatefulWidget {
+  const AddCategory({Key? key}) : super(key: key);
 
   @override
-  State<AddBanner> createState() => _AddBannerState();
+  State<AddCategory> createState() => _AddCategoryState();
 }
 
-class _AddBannerState extends State<AddBanner> {
+class _AddCategoryState extends State<AddCategory> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
 
@@ -31,7 +32,7 @@ class _AddBannerState extends State<AddBanner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Banner'),
+        title: const Text('Add Category'),
       ),
 
       //
@@ -44,13 +45,12 @@ class _AddBannerState extends State<AddBanner> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                hintText: 'Banner Title',
-                label: Text('Banner Title'),
+                hintText: 'Category',
+                label: Text('Category'),
               ),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
-              validator: (value) =>
-                  value!.isEmpty ? 'Enter category name' : null,
+              validator: (value) => value!.isEmpty ? 'Enter category' : null,
             ),
 
             const SizedBox(height: 16),
@@ -62,14 +62,14 @@ class _AddBannerState extends State<AddBanner> {
                 //
                 selectedImage == null
                     ? Container(
-                        height: 250,
+                        height: 200,
                         width: double.infinity,
                         color: Colors.grey.shade300,
                         alignment: Alignment.center,
                         child: const Text('No image selected'),
                       )
                     : SizedBox(
-                        height: 250,
+                        height: 200,
                         width: double.infinity,
                         child: Image.file(
                           selectedImage!,
@@ -102,21 +102,17 @@ class _AddBannerState extends State<AddBanner> {
                       Fluttertoast.cancel();
                       Fluttertoast.showToast(msg: 'No image selected');
                     } else {
-                      String bannerTitle = _nameController.text.trim();
+                      String categoryName = _nameController.text.trim();
                       //
                       setState(() => isUpload = true);
-
-                      //
-                      await uploadImage(bannerTitle);
-
-                      //
+                      await uploadImage(categoryName);
                       setState(() => isUpload = false);
                     }
                   }
                 },
                 child: isUpload
                     ? const CircularProgressIndicator(color: Colors.red)
-                    : const Text('Add Banner'),
+                    : const Text('Add Category'),
               ),
             ),
           ],
@@ -138,18 +134,18 @@ class _AddBannerState extends State<AddBanner> {
   }
 
   //upload image
-  uploadImage(bannerTitle) async {
+  uploadImage(categoryName) async {
     String uid = const Uuid().v1();
 
     //
-    var ref = FirebaseStorage.instance.ref('Banner').child('$uid.jpg');
+    var ref = FirebaseStorage.instance.ref('Category').child('$uid.jpg');
     //
     await ref.putFile(selectedImage!).whenComplete(() async {
       var imageUrl = await ref.getDownloadURL();
 
-      // add banner
-      await BannerProvider.addBanner(
-          uid: uid, bannerTitle: bannerTitle, imageUrl: imageUrl);
+      // add category
+      await CategoryProvider.addCategory(
+          uid: uid, categoryName: categoryName, imageUrl: imageUrl);
       Navigator.pop(context);
     });
   }

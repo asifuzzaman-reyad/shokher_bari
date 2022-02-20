@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shokher_bari/models/product.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/category_provider.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
+import 'package:shokher_bari/provider_admin/subcategory_provider.dart';
 import 'package:uuid/uuid.dart';
+
+import '/provider_admin/category_provider.dart';
+import '/provider_admin/product_provider.dart';
 
 class AddProduct extends StatefulWidget {
   const AddProduct({Key? key}) : super(key: key);
@@ -94,12 +96,10 @@ class _AddProductState extends State<AddProduct> {
 
                         const SizedBox(height: 8),
 
-                        //category
+                        //subcategory
                         _selectedCategory != null
                             ? StreamBuilder<QuerySnapshot>(
-                                stream: FirebaseFirestore.instance
-                                    .collection('All Brand')
-                                    .doc('Brand')
+                                stream: SubcategoryProvider.refSubcategory
                                     .collection(_selectedCategory.toString())
                                     .snapshots(),
                                 builder: (context, snapshot) {
@@ -119,7 +119,7 @@ class _AddProductState extends State<AddProduct> {
                                   }
 
                                   return DropdownButtonFormField(
-                                    hint: const Text('Select Brand'),
+                                    hint: const Text('Select Subcategory'),
                                     items: snapshot.data!.docs
                                         .map((item) => DropdownMenuItem<String>(
                                             value: item.get('name'),
@@ -360,7 +360,7 @@ class _AddProductState extends State<AddProduct> {
     //
     for (var img in _selectedFiles) {
       Reference ref =
-          FirebaseStorage.instance.ref('Products').child(uid).child(img.name);
+          FirebaseStorage.instance.ref('Product').child(uid).child(img.name);
 
       //
       await ref.putFile(File(img.path)).whenComplete(() async {
@@ -382,11 +382,12 @@ class _AddProductState extends State<AddProduct> {
   uploadToFirestore(images) async {
     Product product = Product(
       category: _selectedCategory.toString(),
-      brand: _selectedBrand.toString(),
+      subcategory: _selectedBrand.toString(),
       id: uid,
       name: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
-      price: int.parse(_priceController.text.trim()),
+      regularPrice: int.parse(_priceController.text.trim()) + 10,
+      offerPrice: int.parse(_priceController.text.trim()),
       quantity: int.parse(_quantityController.text.trim()),
       featured: _isSelected == 0 ? true : false,
       images: images,

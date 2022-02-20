@@ -55,7 +55,10 @@ class _ProductCardState extends State<ProductCard> {
                     ),
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        topLeft: Radius.circular(8),
+                      ),
                       image: DecorationImage(
                         image: NetworkImage(widget.product.images[0]),
                         fit: BoxFit.cover,
@@ -160,7 +163,7 @@ class _ProductCardState extends State<ProductCard> {
                 children: [
                   // brand
                   Text(
-                    widget.product.brand,
+                    widget.product.subcategory,
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -187,9 +190,9 @@ class _ProductCardState extends State<ProductCard> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // price
+                      // offer price
                       Text(
-                        '\$ ${widget.product.price}',
+                        '\$ ${widget.product.offerPrice}',
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,

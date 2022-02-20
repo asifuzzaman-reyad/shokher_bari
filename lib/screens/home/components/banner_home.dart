@@ -1,7 +1,8 @@
 import 'package:carousel_pro_nullsafety/carousel_pro_nullsafety.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/banner_provider.dart';
+
+import '/provider_admin/banner_provider.dart';
 
 class BannerHome extends StatelessWidget {
   const BannerHome({Key? key}) : super(key: key);

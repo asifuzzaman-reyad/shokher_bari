@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/constrains.dart';
 import 'package:uuid/uuid.dart';
@@ -28,5 +29,10 @@ class CategoryProvider {
       Fluttertoast.cancel();
       Fluttertoast.showToast(msg: 'Remove from category');
     });
+  }
+
+  //removeCategoryImage
+  static removeCategoryImage({required String imageUrl}) async {
+    await FirebaseStorage.instance.refFromURL(imageUrl).delete();
   }
 }

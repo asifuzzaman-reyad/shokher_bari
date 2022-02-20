@@ -54,7 +54,7 @@ class _CartCardState extends State<CartCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            widget.product.brand,
+                            widget.product.subcategory,
                             style: const TextStyle(color: Colors.grey),
                           ),
 
@@ -102,9 +102,9 @@ class _CartCardState extends State<CartCard> {
                       // price
                       Row(
                         children: [
-                          // sale price
+                          // offer price
                           Text(
-                            '$kTk ${widget.product.price}',
+                            '$kTk ${widget.product.offerPrice}',
                             style:
                                 Theme.of(context).textTheme.subtitle1!.copyWith(
                                       color: Colors.red,
@@ -115,15 +115,16 @@ class _CartCardState extends State<CartCard> {
                           const SizedBox(width: 8),
 
                           // regular price
-                          Text(
-                            '$kTk ${widget.product.price + 20}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough),
-                          ),
+                          if ('${widget.product.regularPrice}'.isNotEmpty)
+                            Text(
+                              '$kTk ${widget.product.regularPrice}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1!
+                                  .copyWith(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough),
+                            ),
                         ],
                       ),
 

@@ -7,7 +7,7 @@ import 'package:shokher_bari/provider/cart_provider.dart';
 import 'package:shokher_bari/provider/wishlist_provider.dart';
 
 import 'cart/cart.dart';
-import 'home/components/featured_products.dart';
+import 'home/components/featured_product_home.dart';
 import 'home/home.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -57,12 +57,12 @@ class _ProductDetailsState extends State<ProductDetails> {
               children: [
                 // product image
                 SizedBox(
-                  height: 300,
+                  height: 280,
                   child: Carousel(
                     autoplay: false,
                     dotIncreasedColor: Colors.red,
-                    dotBgColor: Colors.grey.shade300,
-                    indicatorBgPadding: 8,
+                    dotBgColor: Colors.grey.withOpacity(.5),
+                    indicatorBgPadding: 10,
                     images: widget.product.images
                         .map((image) => Image.network(
                               image,
@@ -85,9 +85,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          //brand
+                          //subcategory
                           Text(
-                            widget.product.brand,
+                            widget.product.subcategory,
                             style: Theme.of(context).textTheme.subtitle1,
                           ),
 
@@ -107,9 +107,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  //sale price
+                                  //offer price
                                   Text(
-                                    '\$ ${widget.product.price}',
+                                    '$kTk ${widget.product.offerPrice}',
                                     style: Theme.of(context)
                                         .textTheme
                                         .subtitle1!
@@ -122,16 +122,18 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   const SizedBox(width: 8),
 
                                   // regular price
-                                  Text(
-                                    '\$ ${widget.product.price}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .subtitle2!
-                                        .copyWith(
-                                            color: Colors.grey,
-                                            decoration:
-                                                TextDecoration.lineThrough),
-                                  ),
+                                  if ('${widget.product.regularPrice}'
+                                      .isNotEmpty)
+                                    Text(
+                                      '$kTk ${widget.product.regularPrice}',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .subtitle2!
+                                          .copyWith(
+                                              color: Colors.grey,
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                    ),
                                 ],
                               ),
 
@@ -234,7 +236,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       color: Colors.white,
                       padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
                       constraints: const BoxConstraints(
-                        minHeight: 100,
+                        minHeight: 150,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +259,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                 ),
 
                 // similar product
-                const FeaturedProducts(),
+                const FeaturedProductHome(),
               ],
             ),
           ),
@@ -268,52 +270,6 @@ class _ProductDetailsState extends State<ProductDetails> {
             color: Colors.white,
             child: Row(
               children: [
-                // add to cart
-                StreamBuilder<DocumentSnapshot>(
-                    stream:
-                        CartProvider.refCart.doc(widget.product.id).snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return IconButton(
-                          onPressed: () {},
-                          icon: snapshot.hasData
-                              ? const Icon(Icons.shopping_cart,
-                                  color: Colors.red)
-                              : const Icon(Icons.shopping_cart_outlined),
-                        );
-                      }
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return IconButton(
-                          onPressed: () {},
-                          icon: snapshot.hasData
-                              ? const Icon(Icons.shopping_cart,
-                                  color: Colors.red)
-                              : const Icon(Icons.shopping_cart_outlined),
-                        );
-                      }
-
-                      if (snapshot.data!.exists) {
-                        return IconButton(
-                          onPressed: () {
-                            //remove from cart
-                            CartProvider.removeFromCart(id: widget.product.id);
-                          },
-                          icon: const Icon(Icons.shopping_cart,
-                              color: Colors.red),
-                        );
-                      }
-
-                      return IconButton(
-                        onPressed: () async {
-                          //add to cart
-                          CartProvider.addToCart(product: widget.product);
-                        },
-                        icon: const Icon(Icons.shopping_cart_outlined),
-                      );
-                    }),
-
-                const SizedBox(width: 8),
-
                 // buy now
                 Expanded(
                   child: SizedBox(
@@ -331,6 +287,73 @@ class _ProductDetailsState extends State<ProductDetails> {
                     ),
                   ),
                 ),
+
+                const SizedBox(width: 8),
+
+                // add to cart
+                StreamBuilder<DocumentSnapshot>(
+                    stream:
+                        CartProvider.refCart.doc(widget.product.id).snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        //
+                        return IconButton(
+                          onPressed: () {},
+                          icon: snapshot.hasData
+                              ? const Icon(Icons.shopping_cart,
+                                  color: Colors.red)
+                              : const Icon(Icons.shopping_cart_outlined),
+                        );
+                      }
+
+                      //
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: snapshot.hasData
+                                ? const Icon(Icons.shopping_cart,
+                                    color: Colors.red)
+                                : const Icon(Icons.shopping_cart_outlined),
+                          ),
+                        );
+                      }
+
+                      //
+                      if (snapshot.data!.exists) {
+                        return Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey.shade400),
+                              borderRadius: BorderRadius.circular(4)),
+                          child: IconButton(
+                            onPressed: () {
+                              //remove from cart
+                              CartProvider.removeFromCart(
+                                  id: widget.product.id);
+                            },
+                            icon: const Icon(Icons.shopping_cart,
+                                color: Colors.red),
+                          ),
+                        );
+                      }
+
+                      //
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade400),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: IconButton(
+                          onPressed: () async {
+                            //add to cart
+                            CartProvider.addToCart(product: widget.product);
+                          },
+                          icon: const Icon(Icons.shopping_cart_outlined),
+                        ),
+                      );
+                    }),
               ],
             ),
           )

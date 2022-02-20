@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shokher_bari/provider/address_provider.dart';
 
 import '../../../../models/address_book.dart';
 
@@ -15,16 +14,17 @@ class _AddressHomeState extends State<AddressHome> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _regionController = TextEditingController();
+  final _divisionController = TextEditingController();
   final _cityController = TextEditingController();
   final _areaController = TextEditingController();
   final _addressController = TextEditingController();
+  bool _isLoading = false;
 
   @override
   void dispose() {
     _nameController.dispose();
     _phoneController.dispose();
-    _regionController.dispose();
+    _divisionController.dispose();
     _cityController.dispose();
     _areaController.dispose();
     _addressController.dispose();
@@ -49,6 +49,7 @@ class _AddressHomeState extends State<AddressHome> {
                   decoration: const InputDecoration(hintText: 'Full Name'),
                   keyboardType: TextInputType.name,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter some text' : null,
                 ),
@@ -63,6 +64,7 @@ class _AddressHomeState extends State<AddressHome> {
                     counterText: "",
                   ),
                   keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
                   maxLength: 11,
                   validator: (value) => value!.isEmpty
                       ? 'Please enter some text'
@@ -72,25 +74,26 @@ class _AddressHomeState extends State<AddressHome> {
                 ),
 
                 const SizedBox(height: 8),
-
-                // city
+                // division
                 TextFormField(
-                  controller: _cityController,
-                  decoration: const InputDecoration(hintText: 'Room No'),
-                  keyboardType: TextInputType.number,
+                  controller: _divisionController,
+                  decoration: const InputDecoration(hintText: 'Division'),
+                  keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter some text' : null,
                 ),
 
                 const SizedBox(height: 8),
 
-                // room
+                // city
                 TextFormField(
-                  controller: _regionController,
-                  decoration: const InputDecoration(hintText: 'Hall'),
+                  controller: _cityController,
+                  decoration: const InputDecoration(hintText: 'City'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter some text' : null,
                 ),
@@ -103,6 +106,7 @@ class _AddressHomeState extends State<AddressHome> {
                   decoration: const InputDecoration(hintText: 'Area'),
                   keyboardType: TextInputType.text,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter some text' : null,
                 ),
@@ -115,6 +119,7 @@ class _AddressHomeState extends State<AddressHome> {
                   decoration: const InputDecoration(hintText: 'Address'),
                   keyboardType: TextInputType.streetAddress,
                   textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.done,
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter some text' : null,
                 ),
@@ -135,38 +140,33 @@ class _AddressHomeState extends State<AddressHome> {
             child: SizedBox(
               height: 48,
               child: ElevatedButton(
-                  onPressed: () {
-                    if (_globalKey.currentState!.validate()) {
-                      AddressBookHome _addressBook = AddressBookHome(
-                        name: _nameController.text.trim(),
-                        phone: _phoneController.text,
-                        region: _regionController.text.trim(),
-                        city: _cityController.text.trim(),
-                        area: _areaController.text.trim(),
-                        address: _addressController.text.trim(),
-                      );
-                      var address = _addressBook.toJson();
+                onPressed: () async {
+                  if (_globalKey.currentState!.validate()) {
+                    setState(() => _isLoading = true);
 
-                      FirebaseFirestore.instance
-                          .collection('Users')
-                          .doc('asifreyad1@gmail.com')
-                          .collection('Address')
-                          .doc()
-                          .set(address)
-                          .then(
-                        (value) {
-                          Fluttertoast.showToast(
-                              msg: 'Add address successfully');
+                    AddressBookHome _addressBook = AddressBookHome(
+                      name: _nameController.text.trim(),
+                      phone: _phoneController.text,
+                      division: _divisionController.text.trim(),
+                      city: _cityController.text.trim(),
+                      area: _areaController.text.trim(),
+                      address: _addressController.text.trim(),
+                    );
+                    var address = _addressBook.toJson();
 
-                          //
-                          Navigator.pop(context);
-                        },
-                      );
-                    }
-                  },
-                  child: const Text('Save')),
+                    await AddressProvider.addAddress('Home', address);
+
+                    setState(() => _isLoading = false);
+
+                    Navigator.pop(context);
+                  }
+                },
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.red)
+                    : const Text('Save'),
+              ),
             ),
-          ),
+          )
         ],
       ),
     );

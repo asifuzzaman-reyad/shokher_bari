@@ -4,6 +4,8 @@ import 'package:shokher_bari/models/cart_product.dart';
 import 'package:shokher_bari/provider/order_provider.dart';
 import 'package:shokher_bari/screens/checkout/checkout_address/checkout_address.dart';
 
+import '../../constrains.dart';
+
 class OrderScreen extends StatelessWidget {
   const OrderScreen({Key? key}) : super(key: key);
 
@@ -88,6 +90,8 @@ class OrderScreen extends StatelessWidget {
                             ),
                           );
                         },
+
+                        //
                         child: Card(
                           margin: const EdgeInsets.symmetric(
                             vertical: 6,
@@ -99,66 +103,44 @@ class OrderScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              //
+                              // order, placed on
                               Padding(
                                 padding:
                                     const EdgeInsets.fromLTRB(12, 12, 12, 4),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     //
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
+                                        //
                                         Text(
                                             'Order: ${data[index].get('uid')}'),
+
+                                        //
                                         Text(
-                                            'Placed on: ${data[index].get('time').toDate()}'),
+                                          // 'Placed',
+                                          data[index].get('payment'),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText2!
+                                              .copyWith(color: Colors.orange),
+                                        ),
                                       ],
                                     ),
 
-                                    // payment
-                                    data[index].get('payment') == 'Unpaid'
-                                        ? OutlinedButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          CheckoutAddress(
-                                                            uid: data[index]
-                                                                .get('uid'),
-                                                            total: data[index]
-                                                                .get('total'),
-                                                          )));
-                                            },
-                                            child: const Text(
-                                              'Unpaid',
-                                              style: TextStyle(
-                                                color: Colors.orange,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          )
-                                        : const Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text(
-                                              'Placed',
-                                              style: TextStyle(
-                                                color: Colors.green,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ),
+                                    //
+                                    Text(
+                                        'Placed on: ${data[index].get('time').toDate()}'),
                                   ],
                                 ),
                               ),
 
                               const Divider(),
 
-                              //
+                              // cart product list
                               ListView.separated(
                                 shrinkWrap: true,
                                 itemCount: products.length,
@@ -178,10 +160,10 @@ class OrderScreen extends StatelessWidget {
 
                               const Divider(),
 
-                              //
+                              //status, items, total
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(12, 2, 12, 10),
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment:
@@ -225,13 +207,13 @@ class OrderScreen extends StatelessWidget {
 
                                         // total
                                         Text(
-                                          '\$ ${data[index].get('total')}',
+                                          '$kTk ${data[index].get('total')}',
                                           style: Theme.of(context)
                                               .textTheme
-                                              .bodyText1!
+                                              .subtitle1!
                                               .copyWith(
                                                 color: Colors.red,
-                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                         ),
                                       ],
@@ -239,6 +221,43 @@ class OrderScreen extends StatelessWidget {
                                   ],
                                 ),
                               ),
+
+                              const SizedBox(height: 8),
+                              const Divider(height: 4),
+
+                              if (data[index].get('payment') == 'Unpaid')
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(12, 4, 12, 8),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      // cancel
+                                      OutlinedButton(
+                                        onPressed: () {},
+                                        child: const Text('Cancel'),
+                                      ),
+
+                                      const SizedBox(width: 8),
+                                      //pay
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      CheckoutAddress(
+                                                        uid: data[index]
+                                                            .get('uid'),
+                                                        total: data[index]
+                                                            .get('total'),
+                                                      )));
+                                        },
+                                        child: const Text('Pay Now'),
+                                      ),
+                                    ],
+                                  ),
+                                )
                             ],
                           ),
                         ),
@@ -272,7 +291,9 @@ class OrderCard extends StatelessWidget {
             color: Colors.pink.shade100.withOpacity(.2),
             borderRadius: BorderRadius.circular(8),
             image: DecorationImage(
-                fit: BoxFit.contain, image: NetworkImage(cartProduct.image)),
+              fit: BoxFit.cover,
+              image: NetworkImage(cartProduct.image),
+            ),
           ),
         ),
 
@@ -286,47 +307,51 @@ class OrderCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                //
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    //brand
-                    Text(
-                      cartProduct.brand,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-
                 //name
-                Text(
-                  cartProduct.name,
-                  // widget.product.get('name'),
-                  maxLines: 2,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                ),
+                Text(cartProduct.name,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.subtitle1!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        )),
 
                 const SizedBox(height: 5),
 
                 //
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
                   children: [
-                    // price
-                    Text(
-                      '\$ ${cartProduct.price}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(color: Colors.red, fontSize: 17),
+                    // price, qty
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
+                      children: [
+                        // price
+                        Text(
+                          '$kTk ${cartProduct.offerPrice}',
+                          style:
+                              Theme.of(context).textTheme.subtitle1!.copyWith(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+
+                        const SizedBox(width: 4),
+                        //item
+                        Text('x ${cartProduct.quantity}'),
+                      ],
                     ),
 
-                    const SizedBox(height: 4),
-                    //item
-                    Text('${cartProduct.quantity} x'),
+                    // total
+                    // price
+                    Text(
+                      '$kTk ${cartProduct.offerPrice * cartProduct.quantity}',
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
                   ],
                 ),
               ],

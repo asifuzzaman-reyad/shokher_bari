@@ -1,7 +1,7 @@
 class AddressBookHome {
   final String name;
   final String phone;
-  final String region;
+  final String division;
   final String city;
   final String area;
   final String address;
@@ -9,7 +9,7 @@ class AddressBookHome {
   AddressBookHome({
     required this.name,
     required this.phone,
-    required this.region,
+    required this.division,
     required this.city,
     required this.area,
     required this.address,
@@ -20,7 +20,7 @@ class AddressBookHome {
     return {
       'name': name,
       'phone': phone,
-      'region': region,
+      'division': division,
       'city': city,
       'area': area,
       'address': address
@@ -32,7 +32,7 @@ class AddressBookHome {
       : this(
           name: json['name']! as String,
           phone: json['phone']! as String,
-          region: json['region']! as String,
+          division: json['division']! as String,
           city: json['city']! as String,
           area: json['area']! as String,
           address: json['address']! as String,

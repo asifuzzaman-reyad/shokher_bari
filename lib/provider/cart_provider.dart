@@ -12,11 +12,12 @@ class CartProvider {
   static addToCart({required Product product}) async {
     Product cartProduct = Product(
       category: product.category,
-      brand: product.brand,
+      subcategory: product.subcategory,
       id: product.id,
       name: product.name,
       description: '',
-      price: product.price,
+      regularPrice: product.regularPrice,
+      offerPrice: product.offerPrice,
       quantity: 1,
       featured: false,
       images: [product.images[0]],

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/category_provider.dart';
-import 'package:shokher_bari/screens/admin/screens/category/all_category_admin.dart';
+
+import '/admin/screens/category/all_category_admin.dart';
+import '/provider_admin/category_provider.dart';
+import '/provider_admin/subcategory_provider.dart';
 
 class AddBrand extends StatefulWidget {
   const AddBrand({Key? key}) : super(key: key);
@@ -77,13 +79,13 @@ class _AddBrandState extends State<AddBrand> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                hintText: 'Brand Name',
-                label: Text('Brand Name'),
+                hintText: 'Subcategory',
+                label: Text('Subcategory'),
               ),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
               validator: (value) =>
-                  value!.isEmpty ? 'please enter brand name' : null,
+                  value!.isEmpty ? 'please enter subcategory' : null,
             ),
 
             const SizedBox(height: 16),
@@ -94,36 +96,22 @@ class _AddBrandState extends State<AddBrand> {
               child: ElevatedButton(
                 onPressed: () async {
                   if (_globalKey.currentState!.validate()) {
-                    String brandName = _nameController.text.trim();
-
-                    var ref = FirebaseFirestore.instance
-                        .collection('All Brand')
-                        .doc('Brand')
-                        .collection(_selectedCategory.toString())
-                        .doc();
-                    //
                     setState(() => isUpload = true);
-
-                    await ref.set({'name': brandName});
-
                     //
-                    // await FirebaseFirestore.instance
-                    //     .collection('Brands')
-                    //     .doc()
-                    //     .set({
-                    //   'category': _selectedCategory,
-                    //   'name': brandName,
-                    // }).then((value) {
-                    //   Fluttertoast.cancel();
-                    //   Fluttertoast.showToast(msg: 'Brand add successfully');
-                    // });
+                    String subcategory = _nameController.text.trim();
+
+                    //addBrand
+                    await SubcategoryProvider.addSubcategory(
+                        selectedCategory: _selectedCategory.toString(),
+                        subcategory: subcategory);
 
                     setState(() => isUpload = false);
+                    Navigator.pop(context);
                   }
                 },
                 child: isUpload
                     ? const CircularProgressIndicator(color: Colors.red)
-                    : const Text('Add Brand'),
+                    : const Text('Add Subcategory'),
               ),
             ),
           ],

@@ -6,16 +6,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../provider_admin/category_provider.dart';
+import '/provider_admin/banner_provider.dart';
 
-class AddCategory extends StatefulWidget {
-  const AddCategory({Key? key}) : super(key: key);
+class AddBanner extends StatefulWidget {
+  const AddBanner({Key? key}) : super(key: key);
 
   @override
-  State<AddCategory> createState() => _AddCategoryState();
+  State<AddBanner> createState() => _AddBannerState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
+class _AddBannerState extends State<AddBanner> {
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
 
@@ -32,7 +32,7 @@ class _AddCategoryState extends State<AddCategory> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Category'),
+        title: const Text('Add Banner'),
       ),
 
       //
@@ -45,8 +45,8 @@ class _AddCategoryState extends State<AddCategory> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                hintText: 'Category Name',
-                label: Text('Category Name'),
+                hintText: 'Banner Title',
+                label: Text('Banner Title'),
               ),
               keyboardType: TextInputType.text,
               textCapitalization: TextCapitalization.words,
@@ -63,14 +63,14 @@ class _AddCategoryState extends State<AddCategory> {
                 //
                 selectedImage == null
                     ? Container(
-                        height: 200,
+                        height: 250,
                         width: double.infinity,
                         color: Colors.grey.shade300,
                         alignment: Alignment.center,
                         child: const Text('No image selected'),
                       )
                     : SizedBox(
-                        height: 200,
+                        height: 250,
                         width: double.infinity,
                         child: Image.file(
                           selectedImage!,
@@ -103,17 +103,21 @@ class _AddCategoryState extends State<AddCategory> {
                       Fluttertoast.cancel();
                       Fluttertoast.showToast(msg: 'No image selected');
                     } else {
-                      String categoryName = _nameController.text.trim();
+                      String bannerTitle = _nameController.text.trim();
                       //
                       setState(() => isUpload = true);
-                      await uploadImage(categoryName);
+
+                      //
+                      await uploadImage(bannerTitle);
+
+                      //
                       setState(() => isUpload = false);
                     }
                   }
                 },
                 child: isUpload
                     ? const CircularProgressIndicator(color: Colors.red)
-                    : const Text('Add Category'),
+                    : const Text('Add Banner'),
               ),
             ),
           ],
@@ -135,21 +139,18 @@ class _AddCategoryState extends State<AddCategory> {
   }
 
   //upload image
-  uploadImage(categoryName) async {
+  uploadImage(bannerTitle) async {
     String uid = const Uuid().v1();
 
     //
-    var ref = FirebaseStorage.instance
-        .ref('Categories')
-        .child(categoryName)
-        .child('$uid.jpg');
+    var ref = FirebaseStorage.instance.ref('Banner').child('$uid.jpg');
     //
     await ref.putFile(selectedImage!).whenComplete(() async {
       var imageUrl = await ref.getDownloadURL();
 
-      // add category
-      await CategoryProvider.addCategory(
-          uid: uid, categoryName: categoryName, imageUrl: imageUrl);
+      // add banner
+      await BannerProvider.addBanner(
+          uid: uid, bannerTitle: bannerTitle, imageUrl: imageUrl);
       Navigator.pop(context);
     });
   }

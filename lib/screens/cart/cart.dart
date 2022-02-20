@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/models/cart_product.dart';
-import 'package:shokher_bari/provider/order_provider.dart';
-import 'package:shokher_bari/screens/checkout/checkout_address/checkout_address.dart';
 
-import '/models/product.dart';
+import '../../models/cart_product.dart';
+import '../../models/product.dart';
 import '../../provider/cart_provider.dart';
+import '../../provider/order_provider.dart';
+import '../checkout/checkout_address/checkout_address.dart';
 import 'components/cart_card.dart';
 
 class Cart extends StatelessWidget {
@@ -44,24 +44,29 @@ class Cart extends StatelessWidget {
             int total = 0;
             var cartList = [];
             var idList = [];
-            for (var doc in snapshot.data!.docs) {
-              total += doc.get('price') * doc.get('quantity') as int;
+            Product? product;
+            for (var item in data) {
+              product = Product.fromSnapshot(item);
+              print(product!.name);
+
+              total += product.offerPrice * product.quantity;
+              print(total);
               //
-              idList.add(doc.get('id'));
+              idList.add(product.id);
 
               var cartProduct = CartProduct(
-                id: doc.get('id'),
-                brand: doc.get('brand'),
-                name: doc.get('name'),
-                price: doc.get('price'),
-                quantity: doc.get('quantity'),
-                image: doc.get('images')[0],
+                id: product.id,
+                name: product.name,
+                offerPrice: product.offerPrice,
+                quantity: product.quantity,
+                image: product.images[0],
               );
-
+              //
               cartList.add(cartProduct.toJson());
               // print(cartList);
             }
 
+            //
             return Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -71,7 +76,7 @@ class Cart extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: data.length,
                     padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemBuilder: (_, index) {
+                    itemBuilder: (context, index) {
                       Product product = Product.fromSnapshot(data[index]);
                       return CartCard(product: product);
                     },

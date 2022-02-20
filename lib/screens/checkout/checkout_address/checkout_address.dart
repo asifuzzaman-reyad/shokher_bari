@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:im_stepper/stepper.dart';
-import 'package:shokher_bari/models/address_book.dart';
-import 'package:shokher_bari/provider/address_provider.dart';
 
+import '/models/address_book.dart';
+import '/provider/address_provider.dart';
 import '../checkout_payment/checkout_payment.dart';
 import 'add_address.dart';
 
@@ -138,7 +138,10 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                       }
 
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: Container());
+                        return Center(
+                            child: Container(
+                          constraints: const BoxConstraints(minHeight: 100),
+                        ));
                       }
 
                       if (!snapshot.data!.exists) {
@@ -157,18 +160,19 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                           border: Border.all(color: Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.all(10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             //
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Icon(
                                   Icons.account_balance,
                                   color: Colors.blue,
                                 ),
+
                                 const SizedBox(width: 8),
 
                                 //
@@ -194,36 +198,144 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                                     location == 'Hall'
                                         ? Icons.check_circle
                                         : Icons.radio_button_unchecked_rounded,
+                                    size: 28,
                                   ),
                                 ),
                               ],
                             ),
 
-                            const SizedBox(height: 8),
+                            const Divider(height: 10),
                             //
                             Text(
                               user.name,
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    // letterSpacing: .5,
+                                  ),
                             ),
-                            Text(
-                              user.phone,
-                              style: Theme.of(context).textTheme.subtitle1,
-                            ),
-                            const SizedBox(height: 16),
+                            Text(user.phone,
+                                style: Theme.of(context).textTheme.subtitle2),
+                            const SizedBox(height: 10),
                             Text(
                               'Room ${user.room}',
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                             Text(
                               user.hall,
-                              style: Theme.of(context).textTheme.subtitle1,
+                              style: Theme.of(context).textTheme.bodyText1,
                             ),
                           ],
                         ),
                       );
                     }),
 
-                //
+                const SizedBox(height: 8),
+
+                // home
+                StreamBuilder<DocumentSnapshot>(
+                    stream: AddressProvider.refAddress.doc('Home').snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text('Something wrong');
+                      }
+
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                            child: Container(
+                          constraints: const BoxConstraints(minHeight: 100),
+                        ));
+                      }
+
+                      if (!snapshot.data!.exists) {
+                        return Container();
+                      }
+
+                      //
+                      Map<String, Object?> data =
+                          snapshot.data!.data() as Map<String, Object?>;
+                      var user = AddressBookHome.fromJson(data);
+                      addressBookHome = user;
+
+                      return Container(
+                        constraints: const BoxConstraints(minHeight: 100),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            //
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.home,
+                                  color: Colors.orange,
+                                ),
+
+                                const SizedBox(width: 8),
+
+                                //
+                                Text(
+                                  'Home'.toUpperCase(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .copyWith(
+                                        color: Colors.orange,
+                                      ),
+                                ),
+
+                                const Spacer(),
+                                //
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      location = 'Home';
+                                    });
+                                  },
+                                  child: Icon(
+                                    location == 'Home'
+                                        ? Icons.check_circle
+                                        : Icons.radio_button_unchecked_rounded,
+                                    size: 28,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            const Divider(height: 10),
+                            //
+                            Text(
+                              user.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    // letterSpacing: .5,
+                                  ),
+                            ),
+                            Text(user.phone,
+                                style: Theme.of(context).textTheme.subtitle2),
+                            const SizedBox(height: 10),
+                            Text(
+                              'Room ${user.address}',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                            Text(
+                              '${user.area}, ${user.city}, ${user.division}.',
+                              style: Theme.of(context).textTheme.bodyText1,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
               ],
             ),
           ),
@@ -238,14 +350,25 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
               child: ElevatedButton(
                 onPressed: () {
                   if (location.isNotEmpty) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => CheckoutPayment(
-                                  uid: widget.uid,
-                                  total: widget.total,
-                                  address: addressBookHome,
-                                )));
+                    if (location == 'Hall') {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => CheckoutPayment(
+                                    uid: widget.uid,
+                                    total: widget.total,
+                                    location: location,
+                                  )));
+                    } else {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => CheckoutPayment(
+                                    uid: widget.uid,
+                                    total: widget.total,
+                                    location: location,
+                                  )));
+                    }
                   } else {
                     Fluttertoast.showToast(msg: 'Please add/select address');
                   }

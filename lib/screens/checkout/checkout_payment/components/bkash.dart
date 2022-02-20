@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:shokher_bari/models/address_book.dart';
+import 'package:shokher_bari/constrains.dart';
 import 'package:shokher_bari/provider/order_provider.dart';
 
 import '../../checkout_order.dart';
@@ -12,13 +12,13 @@ class Bkash extends StatefulWidget {
     required this.method,
     required this.uid,
     required this.total,
-    required this.address,
+    required this.location,
   }) : super(key: key);
 
   final String method;
   final String uid;
   final int total;
-  final AddressBookHome address;
+  final String location;
 
   @override
   State<Bkash> createState() => _BkashState();
@@ -192,9 +192,9 @@ class _BkashState extends State<Bkash> {
 
                           //
                           FirebaseFirestore.instance
-                              .collection('Payments')
+                              .collection('Payment')
                               .doc('Users')
-                              .collection('asifreyad1@gmail.com')
+                              .collection(MyRepo.userEmail)
                               .doc(widget.uid)
                               .set({
                             'uid': widget.uid,
@@ -203,6 +203,7 @@ class _BkashState extends State<Bkash> {
                             'transaction': _transactionController.text.trim(),
                             'message': '',
                             'method': widget.method,
+                            'location': widget.location,
                           }).then(
                             (value) {
                               Fluttertoast.showToast(

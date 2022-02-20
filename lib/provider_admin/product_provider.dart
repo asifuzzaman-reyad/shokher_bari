@@ -1,3 +1,4 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/constrains.dart';
 
@@ -20,5 +21,12 @@ class ProductProvider {
   static removeProduct({required String id}) {
     refProduct.doc(id).delete().then(
         (value) => Fluttertoast.showToast(msg: 'Delete product successfully'));
+  }
+
+  //removeProductImage
+  static removeProductImage({required String imageUrl}) async {
+    await FirebaseStorage.instance.refFromURL(imageUrl).delete().then((value) {
+      print('remove product images');
+    });
   }
 }

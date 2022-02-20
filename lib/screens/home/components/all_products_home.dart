@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:shokher_bari/models/product.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
-import 'package:shokher_bari/screens/all_products.dart';
-import 'package:shokher_bari/widgets/product_card.dart';
+
+import '/models/product.dart';
+import '/provider_admin/product_provider.dart';
+import '/screens/all_products.dart';
+import '/widgets/product_card.dart';
 
 class AllProductsHome extends StatelessWidget {
   const AllProductsHome({Key? key}) : super(key: key);
@@ -70,7 +70,7 @@ class AllProductsHome extends StatelessWidget {
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: .8,
+                    childAspectRatio: .7,
                   ),
                   itemCount: data.length,
                   padding: const EdgeInsets.symmetric(

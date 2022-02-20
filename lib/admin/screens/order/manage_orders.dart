@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shokher_bari/constrains.dart';
 
 class ManageOrders extends StatefulWidget {
   const ManageOrders({Key? key}) : super(key: key);
@@ -28,9 +29,9 @@ class _ManageOrdersState extends State<ManageOrders> {
   StreamBuilder<QuerySnapshot<Object?>> buildStreamBuilder(message) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
-          .collection('Payments')
+          .collection('Payment')
           .doc('Users')
-          .collection('asifreyad1@gmail.com')
+          .collection(MyRepo.userEmail)
           .orderBy('uid', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
@@ -113,6 +114,7 @@ class _ManageOrdersState extends State<ManageOrders> {
                                                 },
                                               ),
                                               actions: [
+                                                //
                                                 ElevatedButton(
                                                     onPressed: () {
                                                       //
@@ -125,10 +127,10 @@ class _ManageOrdersState extends State<ManageOrders> {
                                                         FirebaseFirestore
                                                             .instance
                                                             .collection(
-                                                                'Payments')
+                                                                'Payment')
                                                             .doc('Users')
-                                                            .collection(
-                                                                'asifreyad1@gmail.com')
+                                                            .collection(MyRepo
+                                                                .userEmail)
                                                             .doc(
                                                                 data.get('uid'))
                                                             .update({
@@ -181,9 +183,9 @@ class _ManageOrdersState extends State<ManageOrders> {
 
                               StreamBuilder<DocumentSnapshot>(
                                   stream: FirebaseFirestore.instance
-                                      .collection('Orders')
+                                      .collection('Order')
                                       .doc('Users')
-                                      .collection('asifreyad1@gmail.com')
+                                      .collection(MyRepo.userEmail)
                                       .doc(data.get('uid'))
                                       .snapshots(),
                                   builder: (context, snapshot) {
@@ -200,10 +202,9 @@ class _ManageOrdersState extends State<ManageOrders> {
                                         ? ElevatedButton(
                                             onPressed: () {
                                               FirebaseFirestore.instance
-                                                  .collection('Orders')
+                                                  .collection('Order')
                                                   .doc('Users')
-                                                  .collection(
-                                                      'asifreyad1@gmail.com')
+                                                  .collection(MyRepo.userEmail)
                                                   .doc(data.get('uid'))
                                                   .update({
                                                 'status': 'Processing'
@@ -304,9 +305,9 @@ class _ManageOrdersState extends State<ManageOrders> {
                       //
                       StreamBuilder<DocumentSnapshot>(
                           stream: FirebaseFirestore.instance
-                              .collection('Orders')
+                              .collection('Order')
                               .doc('Users')
-                              .collection('asifreyad1@gmail.com')
+                              .collection(MyRepo.userEmail)
                               .doc(data.get('uid'))
                               .snapshots(),
                           builder: (context, snapshot) {
@@ -323,9 +324,9 @@ class _ManageOrdersState extends State<ManageOrders> {
                                 ? ElevatedButton(
                                     onPressed: () {
                                       FirebaseFirestore.instance
-                                          .collection('Orders')
+                                          .collection('Order')
                                           .doc('Users')
-                                          .collection('asifreyad1@gmail.com')
+                                          .collection(MyRepo.userEmail)
                                           .doc(data.get('uid'))
                                           .update({
                                         'status': 'Processing'
@@ -396,9 +397,9 @@ class _ManageOrdersState extends State<ManageOrders> {
   //
   checkStatus(uid) async {
     await FirebaseFirestore.instance
-        .collection('Orders')
+        .collection('Order')
         .doc('Users')
-        .collection('asifreyad1@gmail.com')
+        .collection(MyRepo.userEmail)
         .doc(uid)
         .get()
         .then((value) {

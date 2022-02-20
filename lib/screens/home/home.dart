@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/screens/admin/admin.dart';
-import 'package:shokher_bari/screens/home/components/banner_home.dart';
-import 'package:shokher_bari/screens/search/search.dart';
 
+import '/admin/admin.dart';
 import '/constrains.dart';
-import '/screens/categories.dart';
+import '/screens/home/components/banner_home.dart';
+import '/screens/search/search.dart';
 import 'components/all_products_home.dart';
-import 'components/featured_products.dart';
+import 'components/category_home.dart';
+import 'components/featured_product_home.dart';
 
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
@@ -41,12 +41,12 @@ class Home extends StatelessWidget {
           BannerHome(),
 
           // category
-          Categories(),
+          CategoryHome(),
 
-          // featured products
-          FeaturedProducts(),
+          // AllProductsHome
+          FeaturedProductHome(),
 
-          //all products
+          //AllProductsHome
           AllProductsHome(),
         ],
       ),

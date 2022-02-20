@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shokher_bari/provider/wishlist_provider.dart';
 
 import '/models/product.dart';
+import '../../constrains.dart';
 import '../product_details.dart';
 
 class Wishlist extends StatelessWidget {
@@ -116,7 +117,7 @@ class _FavoriteCardState extends State<FavoriteCard> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                widget.product.brand,
+                                widget.product.subcategory,
                                 style: const TextStyle(color: Colors.grey),
                               ),
 
@@ -150,9 +151,9 @@ class _FavoriteCardState extends State<FavoriteCard> {
                       // sale price
                       Row(
                         children: [
-                          // sale price
+                          // offer price
                           Text(
-                            '\$ ${widget.product.price}',
+                            '$kTk ${widget.product.offerPrice}',
                             style: Theme.of(context)
                                 .textTheme
                                 .headline6!
@@ -162,15 +163,16 @@ class _FavoriteCardState extends State<FavoriteCard> {
                           const SizedBox(width: 8),
 
                           // regular price
-                          Text(
-                            '\$ ${widget.product.price + 20}',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText1!
-                                .copyWith(
-                                    color: Colors.grey,
-                                    decoration: TextDecoration.lineThrough),
-                          ),
+                          if ('${widget.product.regularPrice}'.isNotEmpty)
+                            Text(
+                              '$kTk ${widget.product.regularPrice}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle2!
+                                  .copyWith(
+                                      color: Colors.grey,
+                                      decoration: TextDecoration.lineThrough),
+                            ),
                         ],
                       ),
                     ],

@@ -14,11 +14,12 @@ class WishlistProvider {
   static addToWishList({required Product product}) async {
     Product cartProduct = Product(
       category: product.category,
-      brand: product.brand,
+      subcategory: product.subcategory,
       id: product.id,
       name: product.name,
       description: '',
-      price: product.price,
+      offerPrice: product.offerPrice,
+      regularPrice: product.regularPrice,
       quantity: 1,
       featured: false,
       images: [product.images[0]],

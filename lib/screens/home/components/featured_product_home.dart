@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
 
 import '/models/product.dart';
+import '/provider_admin/product_provider.dart';
 import '/screens/all_featured_products.dart';
 import '/widgets/product_card.dart';
 
-class FeaturedProducts extends StatelessWidget {
-  const FeaturedProducts({Key? key}) : super(key: key);
+class FeaturedProductHome extends StatelessWidget {
+  const FeaturedProductHome({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

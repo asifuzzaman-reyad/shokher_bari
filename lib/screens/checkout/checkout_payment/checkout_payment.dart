@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
-import 'package:shokher_bari/models/address_book.dart';
 import 'package:shokher_bari/screens/checkout/checkout_payment/checkour_payment_details.dart';
 
 class CheckoutPayment extends StatelessWidget {
   const CheckoutPayment({
     Key? key,
-    required this.address,
     required this.uid,
     required this.total,
+    required this.location,
   }) : super(key: key);
 
   final String uid;
   final int total;
-  final AddressBookHome address;
+  final String location;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +114,7 @@ class CheckoutPayment extends StatelessWidget {
                                   method: 'bkash',
                                   uid: uid,
                                   total: total,
-                                  address: address,
+                                  location: location,
                                 )));
                   },
                   child: Container(
@@ -129,13 +128,11 @@ class CheckoutPayment extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // logo
-                        Container(
-                          child: Image.asset(
-                            'assets/logo/bkash.jpg',
-                            height: 32,
-                            width: 56,
-                            fit: BoxFit.contain,
-                          ),
+                        Image.asset(
+                          'assets/logo/bkash.jpg',
+                          height: 32,
+                          width: 56,
+                          fit: BoxFit.contain,
                         ),
                         const SizedBox(width: 8),
 
@@ -161,7 +158,7 @@ class CheckoutPayment extends StatelessWidget {
                                   method: 'cash',
                                   uid: uid,
                                   total: total,
-                                  address: address,
+                                  location: location,
                                 )));
                     //
                     // FirebaseFirestore.instance

@@ -10,6 +10,7 @@ class AddressProvider {
 
   static addAddress(location, address) async {
     await refAddress.doc(location).set(address).then((value) {
+      Fluttertoast.cancel();
       Fluttertoast.showToast(msg: 'Address add successfully');
     });
   }
