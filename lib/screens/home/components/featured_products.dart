@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
 
 import '/models/product.dart';
 import '/screens/all_featured_products.dart';
@@ -43,7 +44,7 @@ class FeaturedProducts extends StatelessWidget {
           SizedBox(
             height: 250,
             child: StreamBuilder<QuerySnapshot>(
-                stream: Product.refProduct
+                stream: ProductProvider.refProduct
                     .where('featured', isEqualTo: true)
                     .limit(12)
                     .snapshots(),

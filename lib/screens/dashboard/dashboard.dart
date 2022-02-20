@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/screens/cart/cart.dart';
-import 'package:shokher_bari/screens/favorite/favorite.dart';
-import 'package:shokher_bari/screens/home/home.dart';
-import 'package:shokher_bari/screens/orders/orders.dart';
+
+import '/screens/cart/cart.dart';
+import '/screens/home/home.dart';
+import '/screens/profile/profile.dart';
+import '../order/order_screen.dart';
+import '../wishlist/wishlist_screen.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -14,9 +16,10 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final List _screen = [
     const Home(),
-    const Favorite(),
+    const Wishlist(),
     const Cart(),
-    const Orders(),
+    const OrderScreen(),
+    const Profile(),
   ];
   int _selectedIndex = 0;
 
@@ -35,7 +38,7 @@ class _DashboardState extends State<Dashboard> {
           //
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            label: 'Favorites',
+            label: 'Wishlist',
           ),
 
           //
@@ -48,6 +51,12 @@ class _DashboardState extends State<Dashboard> {
           BottomNavigationBarItem(
             icon: Icon(Icons.account_balance_wallet),
             label: 'Orders',
+          ),
+
+          //
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
         currentIndex: _selectedIndex,

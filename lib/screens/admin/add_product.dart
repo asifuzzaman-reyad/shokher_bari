@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/category_provider.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
 import 'package:uuid/uuid.dart';
 
 class AddProduct extends StatefulWidget {
@@ -25,7 +25,7 @@ class _AddProductState extends State<AddProduct> {
   final TextEditingController _quantityController = TextEditingController();
   late int _isSelected = 0;
   String? _selectedBrand;
-  String id = const Uuid().v1();
+  String uid = const Uuid().v1();
 
   List categories = [];
   String? _selectedCategory;
@@ -45,7 +45,6 @@ class _AddProductState extends State<AddProduct> {
     super.dispose();
   }
 
-  // final List<String> _brandList = ["Matedor", "Rfl", "Pran"];
   final List<String> _brandList = [];
 
   final ImagePicker _picker = ImagePicker();
@@ -361,7 +360,7 @@ class _AddProductState extends State<AddProduct> {
     //
     for (var img in _selectedFiles) {
       Reference ref =
-          FirebaseStorage.instance.ref('Products').child(id).child(img.name);
+          FirebaseStorage.instance.ref('Products').child(uid).child(img.name);
 
       //
       await ref.putFile(File(img.path)).whenComplete(() async {
@@ -384,7 +383,7 @@ class _AddProductState extends State<AddProduct> {
     Product product = Product(
       category: _selectedCategory.toString(),
       brand: _selectedBrand.toString(),
-      id: id,
+      id: uid,
       name: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
       price: int.parse(_priceController.text.trim()),
@@ -392,9 +391,9 @@ class _AddProductState extends State<AddProduct> {
       featured: _isSelected == 0 ? true : false,
       images: images,
     );
-    await Product.addProduct(product, id).then((value) {
-      Fluttertoast.cancel();
-      Fluttertoast.showToast(msg: 'Upload Product successfully');
+
+    //addProduct
+    await ProductProvider.addProduct(product: product, uid: uid).then((value) {
       setState(() => _isUploadLoading = false);
       Navigator.pop(context);
     });
@@ -402,7 +401,7 @@ class _AddProductState extends State<AddProduct> {
 
   //
   getCategory() {
-    Product.refCategory
+    CategoryProvider.refCategory
         .orderBy('name')
         .get()
         .then((QuerySnapshot querySnapshot) {

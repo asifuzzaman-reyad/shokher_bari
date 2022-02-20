@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/provider/cart_provider.dart';
 
-import '../../../constrains.dart';
+import '/constrains.dart';
 
 //
 class CartCard extends StatefulWidget {
@@ -58,16 +58,12 @@ class _CartCardState extends State<CartCard> {
                             style: const TextStyle(color: Colors.grey),
                           ),
 
-                          // delete
+                          // removeFromCart
                           GestureDetector(
                             onTap: () async {
-                              await Product.refCart
-                                  .doc(widget.product.id)
-                                  .delete()
-                                  .then((value) {
-                                Fluttertoast.cancel();
-                                Fluttertoast.showToast(msg: 'Remove from cart');
-                              });
+                              //removeFromCart
+                              CartProvider.removeFromCart(
+                                  id: widget.product.id);
                             },
                             child: Container(
                               padding: const EdgeInsets.all(5),
@@ -136,14 +132,12 @@ class _CartCardState extends State<CartCard> {
                         children: [
                           // remove
                           GestureDetector(
-                              onTap: () async {
-                                if (widget.product.quantity != 1) {
-                                  await Product.refCart
-                                      .doc(widget.product.id)
-                                      .update({
-                                    'quantity': widget.product.quantity - 1
-                                  }).then((value) {});
-                                }
+                              onTap: () {
+                                //removeQuantity
+                                CartProvider.removeQuantity(
+                                  id: widget.product.id,
+                                  quantity: widget.product.quantity,
+                                );
                               },
                               child: Container(
                                 decoration: BoxDecoration(
@@ -160,38 +154,40 @@ class _CartCardState extends State<CartCard> {
 
                           // qty text
                           Container(
-                              constraints: const BoxConstraints(minWidth: 32),
-                              alignment: Alignment.center,
-                              child: Text(
-                                '${widget.product.quantity}',
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                ),
-                              )),
+                            constraints: const BoxConstraints(minWidth: 32),
+                            alignment: Alignment.center,
+                            child: Text(
+                              '${widget.product.quantity}',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
 
                           //add
                           GestureDetector(
-                              onTap: () async {
-                                await Product.refCart
-                                    .doc(widget.product.id)
-                                    .update({
-                                  'quantity': widget.product.quantity + 1
-                                }).then((value) {});
-                              },
-                              child: Container(
-                                decoration: const BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue,
-                                ),
-                                padding: const EdgeInsets.all(4.0),
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 20,
-                                ),
-                              )),
+                            onTap: () {
+                              //addQuantity
+                              CartProvider.addQuantity(
+                                id: widget.product.id,
+                                quantity: widget.product.quantity,
+                              );
+                            },
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                              ),
+                              padding: const EdgeInsets.all(4.0),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
                         ],
                       )
                     ],

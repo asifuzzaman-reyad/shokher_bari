@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shokher_bari/provider/wishlist_provider.dart';
 
 import '/models/product.dart';
 import '../product_details.dart';
 
-class Favorite extends StatelessWidget {
-  const Favorite({Key? key}) : super(key: key);
+class Wishlist extends StatelessWidget {
+  const Wishlist({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class Favorite extends StatelessWidget {
           // cart product
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-                stream: Product.refFavourite.snapshots(),
+                stream: WishlistProvider.refWishlist.snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -123,14 +123,9 @@ class _FavoriteCardState extends State<FavoriteCard> {
                               // delete
                               GestureDetector(
                                   onTap: () async {
-                                    await Product.refFavourite
-                                        .doc(widget.product.id)
-                                        .delete()
-                                        .then((value) {
-                                      Fluttertoast.cancel();
-                                      Fluttertoast.showToast(
-                                          msg: 'Delete successfully');
-                                    });
+                                    //removeFromWishList
+                                    WishlistProvider.removeFromWishList(
+                                        id: widget.product.id);
                                   },
                                   child: const Icon(Icons.delete_outline,
                                       size: 18))

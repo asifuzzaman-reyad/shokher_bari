@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/category_provider.dart';
 import 'package:shokher_bari/screens/category/product_category.dart';
 
 class Categories extends StatelessWidget {
@@ -26,7 +26,7 @@ class Categories extends StatelessWidget {
               SizedBox(
                 height: 140,
                 child: StreamBuilder<QuerySnapshot>(
-                    stream: Product.refCategory.snapshots(),
+                    stream: CategoryProvider.refCategory.snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return const Center(

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
 import 'package:shokher_bari/widgets/product_card.dart';
 
 class ProductCategory extends StatelessWidget {
@@ -16,7 +17,7 @@ class ProductCategory extends StatelessWidget {
 
       //
       body: StreamBuilder<QuerySnapshot>(
-          stream: Product.refProduct
+          stream: ProductProvider.refProduct
               .where('category', isEqualTo: category)
               .snapshots(),
           builder: (context, snapshot) {

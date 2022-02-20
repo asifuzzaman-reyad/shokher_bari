@@ -1,10 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/models/cart_product.dart';
-import 'package:shokher_bari/screens/checkout/checkout_address.dart';
+import 'package:shokher_bari/provider/order_provider.dart';
+import 'package:shokher_bari/screens/checkout/checkout_address/checkout_address.dart';
 
 import '/models/product.dart';
+import '../../provider/cart_provider.dart';
 import 'components/cart_card.dart';
 
 class Cart extends StatelessWidget {
@@ -24,7 +25,7 @@ class Cart extends StatelessWidget {
 
       // cart body
       body: StreamBuilder<QuerySnapshot>(
-          stream: Product.refCart.snapshots(),
+          stream: CartProvider.refCart.snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -42,11 +43,11 @@ class Cart extends StatelessWidget {
             //
             int total = 0;
             var cartList = [];
-            var id = [];
+            var idList = [];
             for (var doc in snapshot.data!.docs) {
               total += doc.get('price') * doc.get('quantity') as int;
               //
-              id.add(doc.get('id'));
+              idList.add(doc.get('id'));
 
               var cartProduct = CartProduct(
                 id: doc.get('id'),
@@ -148,32 +149,20 @@ class Cart extends StatelessWidget {
                         child: SizedBox(
                           height: 48,
                           child: ElevatedButton(
-                            onPressed: () async {
+                            onPressed: () {
+                              //uid
                               String uid = DateTime.now()
                                   .microsecondsSinceEpoch
                                   .toString();
 
-                              await FirebaseFirestore.instance
-                                  .collection('Orders')
-                                  .doc('Users')
-                                  .collection(Product.user)
-                                  .doc(uid)
-                                  .set({
-                                'uid': uid,
-                                'total': total,
-                                'payment': 'Unpaid',
-                                'status': 'Pending',
-                                'time': DateTime.now(),
-                                'products': cartList,
-                              }).then((value) {
-                                Fluttertoast.showToast(msg: 'Add to order');
-
-                                //
-                                for (var i in id) {
-                                  Product.deleteFromCart(i);
-                                }
-
-                                //
+                              // addToOrder
+                              OrderProvider.addToOrder(
+                                uid: uid,
+                                total: total,
+                                cartList: cartList,
+                                idList: idList,
+                              ).then((value) {
+                                // go to address screen
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

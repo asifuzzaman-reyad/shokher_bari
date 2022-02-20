@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:shokher_bari/models/address_book.dart';
-import 'package:shokher_bari/screens/checkout/checkour_payment_details.dart';
+import 'package:shokher_bari/screens/checkout/checkout_payment/checkour_payment_details.dart';
 
 class CheckoutPayment extends StatelessWidget {
   const CheckoutPayment({
@@ -13,7 +13,7 @@ class CheckoutPayment extends StatelessWidget {
 
   final String uid;
   final int total;
-  final AddressBook address;
+  final AddressBookHome address;
 
   @override
   Widget build(BuildContext context) {

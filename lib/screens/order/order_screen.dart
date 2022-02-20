@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shokher_bari/models/cart_product.dart';
-import 'package:shokher_bari/models/product.dart';
-import 'package:shokher_bari/screens/checkout/checkout_address.dart';
+import 'package:shokher_bari/provider/order_provider.dart';
+import 'package:shokher_bari/screens/checkout/checkout_address/checkout_address.dart';
 
-class Orders extends StatelessWidget {
-  const Orders({Key? key}) : super(key: key);
+class OrderScreen extends StatelessWidget {
+  const OrderScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class Orders extends StatelessWidget {
           // cart product
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
-              stream: Product.refOrder
+              stream: OrderProvider.refOrder
                   .orderBy('time', descending: true)
                   .snapshots(),
               builder: (BuildContext context,
@@ -58,15 +57,17 @@ class Orders extends StatelessWidget {
                           showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
-                              title: const Text('Delete from orders'),
+                              title: const Text('Delete from order'),
                               actions: [
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     TextButton(
                                       onPressed: () {
-                                        Product.deleteFromOrder(
-                                            data[index].get('uid'));
+                                        var uid = data[index].get('uid');
+
+                                        //removeFromOrder
+                                        OrderProvider.removeFromOrder(uid: uid);
                                         Navigator.pop(context);
                                       },
                                       child: const Text('Delete'),

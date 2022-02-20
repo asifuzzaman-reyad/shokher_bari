@@ -1,7 +1,7 @@
 import 'package:carousel_pro_nullsafety/carousel_pro_nullsafety.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/banner_provider.dart';
 
 class BannerHome extends StatelessWidget {
   const BannerHome({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class BannerHome extends StatelessWidget {
     return SizedBox(
       height: 210,
       child: StreamBuilder<QuerySnapshot>(
-        stream: Product.refCarousel.snapshots(),
+        stream: BannerProvider.refBanner.snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(child: Text('Something went wrong'));

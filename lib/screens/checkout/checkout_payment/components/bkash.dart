@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/models/address_book.dart';
-import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/provider/order_provider.dart';
 
-import '../checkout_order.dart';
+import '../../checkout_order.dart';
 
 class Bkash extends StatefulWidget {
   const Bkash({
@@ -18,7 +18,7 @@ class Bkash extends StatefulWidget {
   final String method;
   final String uid;
   final int total;
-  final AddressBook address;
+  final AddressBookHome address;
 
   @override
   State<Bkash> createState() => _BkashState();
@@ -209,7 +209,7 @@ class _BkashState extends State<Bkash> {
                                   msg: 'Placed order successfully');
 
                               // update order status
-                              Product.refOrder.doc(widget.uid).update({
+                              OrderProvider.refOrder.doc(widget.uid).update({
                                 'payment': 'Placed',
                               });
 

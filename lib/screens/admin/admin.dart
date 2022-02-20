@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shokher_bari/screens/admin/add_brand.dart';
-import 'package:shokher_bari/screens/admin/add_category.dart';
 import 'package:shokher_bari/screens/admin/manage_orders.dart';
-
-import 'add_product.dart';
+import 'package:shokher_bari/screens/admin/screens/banner/all_banner_admin.dart';
+import 'package:shokher_bari/screens/admin/screens/category/all_category_admin.dart';
+import 'package:shokher_bari/screens/admin/screens/product/all_product_admin.dart';
 
 class Admin extends StatefulWidget {
   const Admin({Key? key}) : super(key: key);
@@ -15,8 +15,6 @@ class Admin extends StatefulWidget {
 class _AdminState extends State<Admin> {
   @override
   Widget build(BuildContext context) {
-    String message = '';
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Admin'),
@@ -29,8 +27,10 @@ class _AdminState extends State<Admin> {
           // add category
           ListTile(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddCategory()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllCategoryAdmin()));
             },
             leading: const Icon(Icons.add),
             title: const Text('Add Category'),
@@ -53,8 +53,10 @@ class _AdminState extends State<Admin> {
           // add product
           ListTile(
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const AddProduct()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllProductAdmin()));
             },
             leading: const Icon(Icons.add),
             title: const Text('Add Product'),
@@ -75,7 +77,18 @@ class _AdminState extends State<Admin> {
           ),
 
           const Divider(),
-          //
+
+          // add banner
+          ListTile(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AllBannerAdmin()));
+            },
+            leading: const Icon(Icons.add),
+            title: const Text('Add Banner'),
+          ),
         ],
       ),
     );

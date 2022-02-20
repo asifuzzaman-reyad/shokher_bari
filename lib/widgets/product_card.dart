@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/provider/wishlist_provider.dart';
 import 'package:shokher_bari/screens/product_details.dart';
+
+import '../provider/cart_provider.dart';
 
 class ProductCard extends StatefulWidget {
   const ProductCard({Key? key, required this.product}) : super(key: key);
@@ -62,7 +65,7 @@ class _ProductCardState extends State<ProductCard> {
 
                   // add to favorite
                   StreamBuilder<DocumentSnapshot>(
-                      stream: Product.refFavourite
+                      stream: WishlistProvider.refWishlist
                           .doc(widget.product.id)
                           .snapshots(),
                       builder: (context, snapshot) {
@@ -105,7 +108,9 @@ class _ProductCardState extends State<ProductCard> {
                         if (snapshot.data!.exists) {
                           return GestureDetector(
                             onTap: () {
-                              Product.deleteFromFavorite(widget.product);
+                              //removeFromWishList
+                              WishlistProvider.removeFromWishList(
+                                  id: widget.product.id);
                             },
                             child: Container(
                               decoration: BoxDecoration(
@@ -125,7 +130,9 @@ class _ProductCardState extends State<ProductCard> {
 
                         return GestureDetector(
                           onTap: () {
-                            Product.addToFavorite(widget.product);
+                            //addToWishList
+                            WishlistProvider.addToWishList(
+                                product: widget.product);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -190,13 +197,13 @@ class _ProductCardState extends State<ProductCard> {
                         ),
                       ),
 
-                      //
                       // add to cart
                       StreamBuilder<DocumentSnapshot>(
-                          stream: Product.refCart
+                          stream: CartProvider.refCart
                               .doc(widget.product.id)
                               .snapshots(),
                           builder: (context, snapshot) {
+                            //
                             if (snapshot.hasError) {
                               return GestureDetector(
                                 onTap: () {},
@@ -206,6 +213,8 @@ class _ProductCardState extends State<ProductCard> {
                                     : const Icon(Icons.shopping_cart_outlined),
                               );
                             }
+
+                            //
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return GestureDetector(
@@ -217,10 +226,13 @@ class _ProductCardState extends State<ProductCard> {
                               );
                             }
 
+                            //
                             if (snapshot.data!.exists) {
                               return GestureDetector(
                                 onTap: () {
-                                  Product.deleteFromCart(widget.product.id);
+                                  //remove from cart
+                                  CartProvider.removeFromCart(
+                                      id: widget.product.id);
                                 },
                                 child: const Icon(Icons.shopping_cart,
                                     color: Colors.red),
@@ -229,7 +241,8 @@ class _ProductCardState extends State<ProductCard> {
 
                             return GestureDetector(
                               onTap: () async {
-                                Product.addToCart(widget.product);
+                                //add to cart
+                                CartProvider.addToCart(product: widget.product);
                               },
                               child: const Icon(Icons.shopping_cart_outlined),
                             );

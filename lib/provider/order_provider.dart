@@ -1,5 +1,8 @@
-import 'package:flutter/foundation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shokher_bari/constrains.dart';
 import 'package:shokher_bari/models/product.dart';
+
+import 'cart_provider.dart';
 
 class OrderItem {
   final String id;
@@ -15,21 +18,42 @@ class OrderItem {
   });
 }
 
-class OrderProvider with ChangeNotifier {
-  List<OrderItem> _orders = [];
+//
+class OrderProvider {
+  static final refOrder =
+      MyRepo.ref.collection('Order').doc('Users').collection(MyRepo.userEmail);
 
-  List<OrderItem> get orders => [..._orders];
+  // addToOrder
+  static addToOrder({
+    required String uid,
+    required int total,
+    required List cartList,
+    required List idList,
+  }) async {
+    await refOrder.doc(uid).set({
+      'uid': uid,
+      'total': total,
+      'payment': 'Unpaid',
+      'status': 'Pending',
+      'time': DateTime.now(),
+      'products': cartList,
+    }).then((value) {
+      //
+      for (var id in idList) {
+        //remove from cart using product id
+        CartProvider.removeFromCart(id: id, disAbleToast: true);
+      }
 
-  void addOrder(List<Product> cartProducts, int total) {
-    _orders.insert(
-      0,
-      OrderItem(
-        id: DateTime.now().toString(),
-        total: total,
-        dateTime: DateTime.now(),
-        products: cartProducts,
-      ),
-    );
-    notifyListeners();
+      //
+      Fluttertoast.showToast(msg: 'Add to order');
+    });
+  }
+
+  //deleteFrom order
+  static removeFromOrder({required String uid}) async {
+    await refOrder.doc(uid).delete().then((value) {
+      Fluttertoast.cancel();
+      Fluttertoast.showToast(msg: 'Remove from order');
+    });
   }
 }

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shokher_bari/models/address_book.dart';
-import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/provider/order_provider.dart';
 
-import '../../constrains.dart';
-import 'checkout_order.dart';
+import '../../../constrains.dart';
+import '../checkout_order.dart';
 import 'components/bkash.dart';
 
 class CheckoutPaymentDetails extends StatelessWidget {
@@ -21,7 +21,7 @@ class CheckoutPaymentDetails extends StatelessWidget {
   final String method;
   final String uid;
   final int total;
-  final AddressBook address;
+  final AddressBookHome address;
 
   @override
   Widget build(BuildContext context) {
@@ -335,7 +335,7 @@ class CheckoutPaymentDetails extends StatelessWidget {
 
                         // update order status
 
-                        Product.refOrder.doc(uid).update({
+                        OrderProvider.refOrder.doc(uid).update({
                           'payment': 'Placed',
                         });
 

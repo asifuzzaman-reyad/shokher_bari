@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shokher_bari/models/product.dart';
-
-import 'add_category.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/category_provider.dart';
+import 'package:shokher_bari/screens/admin/screens/category/all_category_admin.dart';
 
 class AddBrand extends StatefulWidget {
   const AddBrand({Key? key}) : super(key: key);
@@ -44,7 +43,7 @@ class _AddBrandState extends State<AddBrand> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AllCategory()));
+                        builder: (context) => const AllCategoryAdmin()));
               },
               icon: const Icon(Icons.widgets_outlined)),
         ],
@@ -135,7 +134,7 @@ class _AddBrandState extends State<AddBrand> {
 
   //
   getCategory() {
-    Product.refCategory
+    CategoryProvider.refCategory
         .orderBy('name')
         .get()
         .then((QuerySnapshot querySnapshot) {

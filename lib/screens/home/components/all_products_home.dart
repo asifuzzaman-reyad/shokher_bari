@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/screens/admin/provider_admin/product_provider.dart';
 import 'package:shokher_bari/screens/all_products.dart';
 import 'package:shokher_bari/widgets/product_card.dart';
 
@@ -47,7 +48,7 @@ class AllProductsHome extends StatelessWidget {
               minHeight: 200,
             ),
             child: StreamBuilder<QuerySnapshot>(
-              stream: Product.refProduct.limit(30).snapshots(),
+              stream: ProductProvider.refProduct.limit(30).snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {

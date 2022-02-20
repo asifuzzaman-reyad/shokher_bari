@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:im_stepper/stepper.dart';
 import 'package:shokher_bari/models/address_book.dart';
-import 'package:shokher_bari/screens/checkout/new_address.dart';
+import 'package:shokher_bari/provider/address_provider.dart';
 
-import 'checkout_payment.dart';
+import '../checkout_payment/checkout_payment.dart';
+import 'add_address.dart';
 
 class CheckoutAddress extends StatefulWidget {
   const CheckoutAddress({
@@ -22,9 +23,9 @@ class CheckoutAddress extends StatefulWidget {
 }
 
 class _CheckoutAddressState extends State<CheckoutAddress> {
-  var label = '';
-  late AddressBook homeAddress;
-  late AddressBook officeAddress;
+  String location = 'Hall';
+  late AddressBookHall addressBookHall;
+  late AddressBookHome addressBookHome;
 
   @override
   Widget build(BuildContext context) {
@@ -113,11 +114,11 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
 
                 const SizedBox(height: 16),
 
-                //
+                // add new address
                 OutlinedButton.icon(
                   onPressed: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const NewAddress()));
+                        MaterialPageRoute(builder: (_) => const AddAddress()));
                   },
                   icon: const Icon(Icons.add_circle_outline),
                   label: const Padding(
@@ -128,116 +129,9 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
 
                 const SizedBox(height: 16),
 
-                // home
-                FutureBuilder<DocumentSnapshot>(
-                  future: FirebaseFirestore.instance
-                      .collection('Users')
-                      .doc('asifreyad1@gmail.com')
-                      .collection('Address')
-                      .doc(Label.home.name)
-                      .get(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Text('Something wrong');
-                    }
-
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: Container());
-                    }
-
-                    if (snapshot.data!.id.isEmpty) {
-                      return Container();
-                    }
-
-                    //
-                    Map<String, Object?> data =
-                        snapshot.data!.data() as Map<String, Object?>;
-                    var user = AddressBook.fromJson(data);
-                    homeAddress = user;
-
-                    //
-                    return Container(
-                      constraints: const BoxConstraints(minHeight: 100),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          //
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Icon(
-                                Icons.home,
-                                color: Colors.orange,
-                              ),
-                              const SizedBox(width: 8),
-
-                              //
-                              Text(
-                                'Home'.toUpperCase(),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline6!
-                                    .copyWith(
-                                      color: Colors.orange,
-                                    ),
-                              ),
-
-                              const Spacer(),
-                              //
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    label = Label.home.name;
-                                  });
-                                },
-                                child: Icon(
-                                  label == Label.home.name
-                                      ? Icons.check_circle
-                                      : Icons.radio_button_unchecked_rounded,
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 8),
-                          //
-                          Text(
-                            user.name,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          Text(
-                            user.phone,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            user.address,
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                          Text(
-                            '${user.area}, ${user.city}, ${user.region}',
-                            style: Theme.of(context).textTheme.subtitle1,
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 16),
-
-                FutureBuilder<DocumentSnapshot>(
-                    future: FirebaseFirestore.instance
-                        .collection('Users')
-                        .doc('asifreyad1@gmail.com')
-                        .collection('Address')
-                        .doc(Label.office.name)
-                        .get(),
+                // hall
+                StreamBuilder<DocumentSnapshot>(
+                    stream: AddressProvider.refAddress.doc('Hall').snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return const Text('Something wrong');
@@ -247,15 +141,15 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                         return Center(child: Container());
                       }
 
-                      if (snapshot.data!.id.isEmpty) {
+                      if (!snapshot.data!.exists) {
                         return Container();
                       }
 
                       //
                       Map<String, Object?> data =
                           snapshot.data!.data() as Map<String, Object?>;
-                      var user = AddressBook.fromJson(data);
-                      officeAddress = user;
+                      var user = AddressBookHall.fromJson(data);
+                      addressBookHall = user;
 
                       return Container(
                         constraints: const BoxConstraints(minHeight: 100),
@@ -272,14 +166,14 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Icon(
-                                  Icons.style,
+                                  Icons.account_balance,
                                   color: Colors.blue,
                                 ),
                                 const SizedBox(width: 8),
 
                                 //
                                 Text(
-                                  'Office'.toUpperCase(),
+                                  'Hall'.toUpperCase(),
                                   style: Theme.of(context)
                                       .textTheme
                                       .headline6!
@@ -293,11 +187,11 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      label = Label.office.name;
+                                      location = 'Hall';
                                     });
                                   },
                                   child: Icon(
-                                    label == Label.office.name
+                                    location == 'Hall'
                                         ? Icons.check_circle
                                         : Icons.radio_button_unchecked_rounded,
                                   ),
@@ -317,11 +211,11 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              user.address,
+                              'Room ${user.room}',
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                             Text(
-                              '${user.area}, ${user.city}, ${user.region}',
+                              user.hall,
                               style: Theme.of(context).textTheme.subtitle1,
                             ),
                           ],
@@ -334,7 +228,7 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
             ),
           ),
 
-          //
+          //Proceed To Payment
           Container(
             color: Colors.white,
             width: double.infinity,
@@ -343,16 +237,14 @@ class _CheckoutAddressState extends State<CheckoutAddress> {
               height: 48,
               child: ElevatedButton(
                 onPressed: () {
-                  if (label.isNotEmpty) {
+                  if (location.isNotEmpty) {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (_) => CheckoutPayment(
                                   uid: widget.uid,
                                   total: widget.total,
-                                  address: label == Label.home.name
-                                      ? homeAddress
-                                      : officeAddress,
+                                  address: addressBookHome,
                                 )));
                   } else {
                     Fluttertoast.showToast(msg: 'Please add/select address');

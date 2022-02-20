@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:im_stepper/stepper.dart';
-import 'package:shokher_bari/dashboard.dart';
+import 'package:shokher_bari/screens/dashboard/dashboard.dart';
 
 class CheckoutOrder extends StatelessWidget {
   const CheckoutOrder({Key? key, required this.uid}) : super(key: key);

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shokher_bari/constrains.dart';
 import 'package:shokher_bari/models/product.dart';
+import 'package:shokher_bari/provider/cart_provider.dart';
+import 'package:shokher_bari/provider/wishlist_provider.dart';
 
 import 'cart/cart.dart';
 import 'home/components/featured_products.dart';
@@ -135,7 +137,7 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                               // add to favorite
                               StreamBuilder<DocumentSnapshot>(
-                                  stream: Product.refFavourite
+                                  stream: WishlistProvider.refWishlist
                                       .doc(widget.product.id)
                                       .snapshots(),
                                   builder: (context, snapshot) {
@@ -178,8 +180,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     if (snapshot.data!.exists) {
                                       return GestureDetector(
                                         onTap: () {
-                                          Product.deleteFromFavorite(
-                                              widget.product);
+                                          //removeFromWishList
+                                          WishlistProvider.removeFromWishList(
+                                              id: widget.product.id);
                                         },
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -199,7 +202,9 @@ class _ProductDetailsState extends State<ProductDetails> {
 
                                     return GestureDetector(
                                       onTap: () {
-                                        Product.addToFavorite(widget.product);
+                                        //addToWishList
+                                        WishlistProvider.addToWishList(
+                                            product: widget.product);
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
@@ -265,7 +270,8 @@ class _ProductDetailsState extends State<ProductDetails> {
               children: [
                 // add to cart
                 StreamBuilder<DocumentSnapshot>(
-                    stream: Product.refCart.doc(widget.product.id).snapshots(),
+                    stream:
+                        CartProvider.refCart.doc(widget.product.id).snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return IconButton(
@@ -289,7 +295,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                       if (snapshot.data!.exists) {
                         return IconButton(
                           onPressed: () {
-                            Product.deleteFromCart(widget.product.id);
+                            //remove from cart
+                            CartProvider.removeFromCart(id: widget.product.id);
                           },
                           icon: const Icon(Icons.shopping_cart,
                               color: Colors.red),
@@ -299,7 +306,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       return IconButton(
                         onPressed: () async {
                           //add to cart
-                          Product.addToCart(widget.product);
+                          CartProvider.addToCart(product: widget.product);
                         },
                         icon: const Icon(Icons.shopping_cart_outlined),
                       );
@@ -314,7 +321,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                     child: ElevatedButton(
                       onPressed: () async {
                         // first => add to cart
-                        await Product.addToCart(widget.product);
+                        CartProvider.addToCart(product: widget.product);
 
                         // then go to cart
                         Navigator.push(context,
